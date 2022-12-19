@@ -7,14 +7,11 @@ public class Delivery : MonoBehaviour
     bool hasPackage = false;
     Color32 carColorWithoutPackage;
     Color32 carColorWithPackage;
-    [SerializeField] float destroyDelay = 0.5f;
     GameObject package;
 
     SpriteRenderer spriteRenderer;
 
     void Start() {
-        // carColorWithPackage = hexToColor("43E72A");
-        // carColorWithoutPackage = hexToColor("2AE742");
         carColorWithPackage = hexToColor("FF00FF");
         carColorWithoutPackage = hexToColor("00FF00");
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -27,23 +24,25 @@ public class Delivery : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other) {
         if(other.tag == "Package" && !hasPackage) {
-            Debug.Log(other.tag + " Triggered");
             hasPackage = true;
             spriteRenderer.color = carColorWithPackage;
-            this.package = other.gameObject;
-            this.package.SetActive(false);
-            // Destroy(other.gameObject, destroyDelay);
+            package = other.gameObject;
+            package.SetActive(false);
         }
+        
         if(other.tag == "Customer" && hasPackage) {
-            Debug.Log(other.tag + " Triggered");
             hasPackage = false;
             spriteRenderer.color = carColorWithoutPackage;
-            this.package.SetActive(true);
+
+            float xRandom = Random.Range(-1f, 1f);
+            float yRandom = Random.Range(-1f, 1f);
+            package.transform.position = new Vector3(xRandom < 0 ? -11 : 11, yRandom < 0 ? -7 : 11, 0);
+            package.SetActive(true);
         }
         
     }
 
-    public Color hexToColor(string hex)
+    static Color hexToColor(string hex)
     {
         hex = hex.Replace ("0x", "");//in case the string is formatted 0xFFFFFF
         hex = hex.Replace ("#", "");//in case the string is formatted #FFFFFF
